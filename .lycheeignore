@@ -1,0 +1,7 @@
+# Non-HTTP schemes and infrastructure that lychee can't (or shouldn't) verify.
+^tel:.*
+^mailto:.*
+^sms:.*
+# Placeholder production host used in sitemap.xml / robots.txt while the
+# custom domain is being provisioned. Remove once lrsservice.com is live.
+^https?://lrsservice\.com($|/.*)
