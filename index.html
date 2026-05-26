@@ -53,6 +53,16 @@
     { "@type": "City", "name": "Orono" },
     { "@type": "City", "name": "Maple Plain" }
   ],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Mobile Detailing Services",
+    "itemListElement": [
+      { "@type": "Offer", "name": "Express Wash",    "priceCurrency": "USD", "price": "60",  "priceSpecification": { "@type": "PriceSpecification", "minPrice": "60",  "priceCurrency": "USD" } },
+      { "@type": "Offer", "name": "Interior Detail", "priceCurrency": "USD", "price": "120", "priceSpecification": { "@type": "PriceSpecification", "minPrice": "120", "priceCurrency": "USD" } },
+      { "@type": "Offer", "name": "Full Detail",     "priceCurrency": "USD", "price": "200", "priceSpecification": { "@type": "PriceSpecification", "minPrice": "200", "priceCurrency": "USD" } },
+      { "@type": "Offer", "name": "Paint Polish",    "priceCurrency": "USD", "price": "300", "priceSpecification": { "@type": "PriceSpecification", "minPrice": "300", "priceCurrency": "USD" } }
+    ]
+  },
   "slogan": "Cleaner Car. Better Impression."
 }
 </script>
@@ -491,6 +501,84 @@
     text-align: center;
     letter-spacing: .04em;
   }
+  .svc-note {
+    font-size: 12px;
+    color: var(--muted);
+    background: rgba(230,57,70,.06);
+    border-left: 2px solid var(--red);
+    padding: 10px 12px;
+    margin: -6px 0 22px;
+    line-height: 1.5;
+  }
+
+  /* ---------- ADD-ONS ---------- */
+  .addons {
+    margin-top: 36px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 24px 24px 20px;
+  }
+  .addons-title {
+    font-family: 'Anton', sans-serif;
+    font-size: 18px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 16px;
+  }
+  .addons-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .addons-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-top: 1px solid var(--line);
+    gap: 16px;
+  }
+  .addons-list li:first-child { border-top: none; }
+  .addon-label {
+    font-size: 14px;
+    color: var(--text);
+  }
+  .addon-price {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--red);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* ---------- FAQ ---------- */
+  #faq { background: var(--bg-2); border-top: 1px solid var(--line); }
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .faq-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--red);
+    padding: 22px 24px;
+  }
+  .faq-card h3 {
+    font-family: 'Anton', sans-serif;
+    font-size: 18px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+  .faq-card p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+  }
 
   /* ---------- PROCESS ---------- */
   .process-grid {
@@ -774,9 +862,12 @@
     .form-row { grid-template-columns: 1fr 1fr; }
     .form-actions { flex-direction: row; }
     .form-actions .btn { flex: 1; }
+    .services-grid { grid-template-columns: repeat(2, 1fr); }
+    .addons-list { grid-template-columns: 1fr 1fr; column-gap: 24px; }
+    .addons-list li:nth-child(2) { border-top: none; }
+    .faq-grid { grid-template-columns: repeat(2, 1fr); }
   }
   @media (min-width: 880px) {
-    .services-grid  { grid-template-columns: repeat(3, 1fr); }
     .process-grid   { grid-template-columns: repeat(4, 1fr); }
     .why-grid       { grid-template-columns: repeat(2, 1fr); }
     .foot-grid      { grid-template-columns: 2fr 1fr 1fr; }
@@ -784,7 +875,8 @@
     .gallery-grid   { grid-template-columns: repeat(4, 1fr); }
   }
   @media (min-width: 1024px) {
-    .why-grid { grid-template-columns: repeat(4, 1fr); }
+    .why-grid       { grid-template-columns: repeat(4, 1fr); }
+    .services-grid  { grid-template-columns: repeat(4, 1fr); }
   }
   @media (max-width: 480px) {
     .nav-cta span { display: none; }
@@ -941,9 +1033,9 @@
       <span class="section-eyebrow">// Services</span>
       <h2 class="section-title">Pick the Package <br>That Fits Your Ride</h2>
       <p class="section-lede">
-        Three core detail packages, fully mobile.
-        Need something custom? Pet hair removal, headlight restoration,
-        or a deeper clean — just ask.
+        Four core detail packages, fully mobile — from a quick maintenance wash to a
+        full single-stage paint polish. Need something custom?
+        Pet hair removal, headlight restoration, or engine bay clean — just ask.
       </p>
     </div>
 
@@ -979,6 +1071,7 @@
           <li>UV protectant on plastics</li>
           <li>Floor mats cleaned</li>
         </ul>
+        <p class="svc-note">Heavily soiled interiors, pet hair, or odor removal may add $30–$80. We'll confirm before any work begins.</p>
         <a href="#quote" class="svc-cta" data-service="Interior Detail ($120+)">Book Interior</a>
       </article>
 
@@ -999,9 +1092,40 @@
         <a href="#quote" class="svc-cta" data-service="Full Detail ($200+)">Book Full Detail</a>
       </article>
 
+      <!-- Paint Polish -->
+      <article class="svc">
+        <div class="svc-tag">04 / Paint Polish</div>
+        <h3>Paint Polish</h3>
+        <p class="svc-desc">Single-stage machine polish — bring back gloss, kill light swirls.</p>
+        <div class="svc-price"><span class="from">From</span>$300</div>
+        <div class="svc-time">~3–4 hours</div>
+        <ul>
+          <li>Hand wash &amp; iron decontamination</li>
+          <li>Clay bar treatment</li>
+          <li>Single-stage machine polish</li>
+          <li>Paint sealant for 3–6 mo protection</li>
+          <li>Tire dressing &amp; glass finish</li>
+        </ul>
+        <p class="svc-note">Removes ~60–80% of light swirls, oxidation, and water spots. Sedan in average condition; trucks, SUVs, or heavy oxidation quoted separately.</p>
+        <a href="#quote" class="svc-cta" data-service="Paint Polish ($300+)">Book Polish</a>
+      </article>
+
     </div>
+
+    <!-- Add-ons -->
+    <div class="addons">
+      <h3 class="addons-title">Common Add-Ons</h3>
+      <ul class="addons-list">
+        <li><span class="addon-label">Pet hair removal</span><span class="addon-price">+$25–$75</span></li>
+        <li><span class="addon-label">Headlight restoration (pair)</span><span class="addon-price">+$50–$100</span></li>
+        <li><span class="addon-label">Engine bay clean</span><span class="addon-price">+$50–$75</span></li>
+        <li><span class="addon-label">Heavy odor / smoke removal</span><span class="addon-price">+$40–$80</span></li>
+        <li><span class="addon-label">Clay bar (standalone)</span><span class="addon-price">+$50–$75</span></li>
+      </ul>
+    </div>
+
     <p class="svc-disclaimer">
-      Starting prices · Final quote depends on vehicle size and condition · Pet hair, heavy stains, and odor removal add-ons available
+      Starting prices reflect a sedan in average condition. Final quote depends on vehicle size and overall condition — we'll confirm before any work begins.
     </p>
   </div>
 </section>
@@ -1071,6 +1195,43 @@
         <div class="why-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
         <h3>Quality Products</h3>
         <p>Pro-grade soaps, microfiber, and finish products. Safe on paint, leather, and modern interiors.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== FAQ ============== -->
+<section id="faq">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-eyebrow">// FAQ</span>
+      <h2 class="section-title">Common Questions</h2>
+      <p class="section-lede">If your question isn't here, just call or text — we'll get back to you fast.</p>
+    </div>
+    <div class="faq-grid">
+      <div class="faq-card">
+        <h3>Do you bring your own water and power?</h3>
+        <p>Yes — we're fully self-contained. We just need driveway, garage, or lot space to park and work safely.</p>
+      </div>
+      <div class="faq-card">
+        <h3>What if it rains?</h3>
+        <p>Interior details run rain or shine. For exterior work and polish jobs, we'll reschedule to the next clear window — no charge for the move.</p>
+      </div>
+      <div class="faq-card">
+        <h3>Do I need to be home?</h3>
+        <p>Not required. As long as we have access to the vehicle and a spot to work, you can drop the keys and go about your day.</p>
+      </div>
+      <div class="faq-card">
+        <h3>Will polish remove all my scratches?</h3>
+        <p>A single-stage polish removes most light swirls, oxidation, and water spots. Deeper scratches (down to primer) need paint correction — we'll be straight about what we can fix before we start.</p>
+      </div>
+      <div class="faq-card">
+        <h3>How long does the polish last?</h3>
+        <p>The sealant we apply protects the paint for roughly 3–6 months depending on storage, washing habits, and weather. A ceramic upgrade extends that significantly.</p>
+      </div>
+      <div class="faq-card">
+        <h3>How do I pay?</h3>
+        <p>Cash, Venmo, Cash App, or Zelle when the job's done. No deposit required for standard packages.</p>
       </div>
     </div>
   </div>
@@ -1166,6 +1327,8 @@
               <option>Express Wash ($60+)</option>
               <option>Interior Detail ($120+)</option>
               <option>Full Detail ($200+)</option>
+              <option>Paint Polish ($300+)</option>
+              <option>Add-on (pet hair, headlights, etc.)</option>
               <option>Not sure — recommend something</option>
             </select>
           </div>
@@ -1234,6 +1397,7 @@
         <h4>Sections</h4>
         <a href="#services">Services</a>
         <a href="#why">Why LRS</a>
+        <a href="#faq">FAQ</a>
         <a href="#area">Service Area</a>
         <a href="#quote">Get a Quote</a>
       </div>
