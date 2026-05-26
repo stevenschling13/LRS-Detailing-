@@ -19,7 +19,7 @@ INDEX_PATH = REPO_ROOT / "index.html"
 PHONE_DIGITS = "9522559160"
 PHONE_E164 = "+19522559160"
 TAGLINE = "Cleaner Car"
-PRICE_TIERS = ("$60", "$120", "$200")
+PRICE_TIERS = ("$60", "$120", "$200", "$300")
 
 
 class IndexContentTests(unittest.TestCase):
@@ -116,19 +116,60 @@ class IndexContentTests(unittest.TestCase):
         )
 
     def test_service_card_buttons_carry_data_service(self) -> None:
-        # The "Book X" buttons on the three service cards should each
+        # The "Book X" buttons on the four service cards should each
         # tag themselves with data-service so the JS pre-fill knows
         # which option to select.
         for value in (
             "Express Wash ($60+)",
             "Interior Detail ($120+)",
             "Full Detail ($200+)",
+            "Paint Polish ($300+)",
         ):
             self.assertIn(
                 f'data-service="{value}"',
                 self.html,
                 f"missing data-service for: {value}",
             )
+
+    def test_interior_card_has_condition_pricing_note(self) -> None:
+        # The Interior card must visibly warn that dirtier vehicles
+        # may add cost — protects against repricing surprises.
+        self.assertRegex(
+            self.html,
+            r"Heavily soiled.*?pet hair.*?\$30",
+            "Interior svc-note must mention condition-based pricing range",
+        )
+
+    def test_polish_card_present_with_expected_inclusions(self) -> None:
+        self.assertIn("Paint Polish", self.html)
+        self.assertIn("Single-stage machine polish", self.html)
+        self.assertIn("Clay bar", self.html)
+
+    def test_addons_section_lists_common_extras(self) -> None:
+        for label in ("Pet hair removal", "Headlight restoration", "Engine bay"):
+            self.assertIn(label, self.html, f"add-on missing: {label}")
+
+    def test_faq_section_present(self) -> None:
+        self.assertRegex(self.html, r'<section[^>]+id=["\']faq["\']')
+        # Sanity-check at least one Q&A signal phrase.
+        self.assertIn("Do you bring your own water", self.html)
+
+    def test_offer_catalog_in_json_ld(self) -> None:
+        m = re.search(
+            r'<script\s+type=["\']application/ld\+json["\']\s*>(.+?)</script>',
+            self.html,
+            flags=re.DOTALL | re.IGNORECASE,
+        )
+        self.assertIsNotNone(m)
+        data = json.loads(m.group(1))
+        catalog = data.get("hasOfferCatalog")
+        self.assertIsNotNone(catalog, "JSON-LD must include hasOfferCatalog")
+        offers = catalog.get("itemListElement", [])
+        names = {o.get("name") for o in offers}
+        self.assertEqual(
+            names,
+            {"Express Wash", "Interior Detail", "Full Detail", "Paint Polish"},
+        )
 
     def test_html_has_scroll_padding_for_sticky_nav(self) -> None:
         self.assertRegex(
