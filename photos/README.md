@@ -22,5 +22,7 @@ Use sequential filenames:
 Edit `/index.html`, search for `class="ph"`, and replace each placeholder `div` with:
 
 ```html
-<img src="./photos/01.jpg" alt="Before and after detail" loading="lazy" />
+<img src="/photos/01.jpg" alt="Before and after detail of a 2019 Honda CR-V interior" width="800" height="600" loading="lazy" decoding="async" />
 ```
+
+Always include explicit `width` and `height` so the browser can reserve layout space (prevents cumulative layout shift). Match the aspect ratio of the file. Write a real `alt` description for each photo — what's in it, not just "before and after".
