@@ -137,6 +137,13 @@ class ErrorPageTests(unittest.TestCase):
     def test_links_back_to_home(self) -> None:
         self.assertRegex(self.html, r'href=["\']/["\']')
 
+    def test_call_link_uses_e164_format(self) -> None:
+        # The phone CTA must be E.164 (+1...) for consistent dialer
+        # behavior across iOS/Android/desktop. The bare 10-digit form
+        # works on most phones but not on desktop dialers.
+        self.assertRegex(self.html, r'href=["\']tel:\+19522559160["\']')
+        self.assertNotRegex(self.html, r'href=["\']tel:9522559160["\']')
+
 
 if __name__ == "__main__":  # pragma: no cover
     unittest.main()

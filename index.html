@@ -78,7 +78,15 @@
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  html { scroll-behavior: smooth; scroll-padding-top: 88px; -webkit-text-size-adjust: 100%; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: .001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: .001ms !important;
+    }
+  }
   body {
     background: var(--bg);
     color: var(--text);
@@ -954,7 +962,7 @@
           <li>Tire shine applied</li>
           <li>Windows exterior</li>
         </ul>
-        <a href="#quote" class="svc-cta">Book Express</a>
+        <a href="#quote" class="svc-cta" data-service="Express Wash ($60+)">Book Express</a>
       </article>
 
       <!-- Interior (featured) -->
@@ -971,7 +979,7 @@
           <li>UV protectant on plastics</li>
           <li>Floor mats cleaned</li>
         </ul>
-        <a href="#quote" class="svc-cta">Book Interior</a>
+        <a href="#quote" class="svc-cta" data-service="Interior Detail ($120+)">Book Interior</a>
       </article>
 
       <!-- Full Detail -->
@@ -988,7 +996,7 @@
           <li>Cup holders &amp; vents detailed</li>
           <li>Air freshener included</li>
         </ul>
-        <a href="#quote" class="svc-cta">Book Full Detail</a>
+        <a href="#quote" class="svc-cta" data-service="Full Detail ($200+)">Book Full Detail</a>
       </article>
 
     </div>
@@ -1147,7 +1155,7 @@
           </div>
           <div class="field">
             <label for="vehicle">Vehicle</label>
-            <input id="vehicle" name="vehicle" type="text" placeholder="e.g. 2019 Honda CR-V" maxlength="80" required aria-required="true" />
+            <input id="vehicle" name="vehicle" type="text" placeholder="e.g. 2019 Honda CR-V" maxlength="80" required aria-required="true" autocomplete="off" />
           </div>
         </div>
         <div class="form-row">
@@ -1163,7 +1171,7 @@
           </div>
           <div class="field">
             <label for="city">City</label>
-            <input id="city" name="city" type="text" placeholder="e.g. Plymouth" maxlength="60" required aria-required="true" />
+            <input id="city" name="city" type="text" placeholder="e.g. Plymouth" maxlength="60" required aria-required="true" autocomplete="address-level2" />
           </div>
         </div>
         <div class="field">
@@ -1247,6 +1255,40 @@
       if (yearEl) yearEl.textContent = String(new Date().getFullYear());
     } catch (_) { /* non-fatal */ }
 
+    // Respect the user's motion preference for any JS-driven scrolling.
+    var prefersReducedMotion = false;
+    try {
+      prefersReducedMotion =
+        window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    } catch (_) { /* matchMedia missing — assume default */ }
+    var scrollBehavior = prefersReducedMotion ? 'auto' : 'smooth';
+
+    // Service-card "Book X" links pre-fill the form's Service Wanted
+    // dropdown before the anchor scroll. Falls back gracefully if the
+    // matching <option> isn't found (e.g. someone edited the labels).
+    var serviceField = document.getElementById('service');
+    function applyServicePrefill(value) {
+      if (!serviceField || !value) return;
+      var match = null;
+      for (var i = 0; i < serviceField.options.length; i++) {
+        var opt = serviceField.options[i];
+        if (opt.value === value || opt.textContent === value) { match = opt; break; }
+      }
+      if (match) {
+        serviceField.value = match.value || match.textContent;
+        try {
+          serviceField.dispatchEvent(new Event('change', { bubbles: true }));
+        } catch (_) { /* CustomEvent unsupported, skip */ }
+      }
+    }
+    var prefillTriggers = document.querySelectorAll('[data-service]');
+    for (var i = 0; i < prefillTriggers.length; i++) {
+      prefillTriggers[i].addEventListener('click', function (e) {
+        try { applyServicePrefill(this.getAttribute('data-service')); } catch (_) {}
+      });
+    }
+
     var form = document.getElementById('quoteForm');
     if (!form) return;
 
@@ -1287,7 +1329,7 @@
       }
       status.hidden = false;
       // Move focus there for screen reader users.
-      try { status.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (_) {}
+      try { status.scrollIntoView({ behavior: scrollBehavior, block: 'nearest' }); } catch (_) {}
     }
 
     function setBusy(busy) {

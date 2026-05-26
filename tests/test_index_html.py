@@ -115,6 +115,31 @@ class IndexContentTests(unittest.TestCase):
             re.IGNORECASE,
         )
 
+    def test_service_card_buttons_carry_data_service(self) -> None:
+        # The "Book X" buttons on the three service cards should each
+        # tag themselves with data-service so the JS pre-fill knows
+        # which option to select.
+        for value in (
+            "Express Wash ($60+)",
+            "Interior Detail ($120+)",
+            "Full Detail ($200+)",
+        ):
+            self.assertIn(
+                f'data-service="{value}"',
+                self.html,
+                f"missing data-service for: {value}",
+            )
+
+    def test_html_has_scroll_padding_for_sticky_nav(self) -> None:
+        self.assertRegex(
+            self.html,
+            r"html\s*\{[^}]*scroll-padding-top",
+            re.IGNORECASE,
+        )
+
+    def test_reduced_motion_overrides_present(self) -> None:
+        self.assertIn("prefers-reduced-motion: reduce", self.html)
+
 
 if __name__ == "__main__":  # pragma: no cover
     unittest.main()
