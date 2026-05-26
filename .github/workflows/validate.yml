@@ -64,8 +64,8 @@ jobs:
         run: npm install --no-save pa11y@8
       - name: Serve site
         run: |
-          python3 -m http.server 8000 >/tmp/http.log 2>&1 &
-          echo $! > /tmp/http.pid
+          python3 -m http.server 8000 >"$RUNNER_TEMP/http.log" 2>&1 &
+          echo $! > "$RUNNER_TEMP/http.pid"
           for i in $(seq 1 20); do
             if curl -fs http://127.0.0.1:8000/404.html >/dev/null; then
               exit 0
@@ -73,13 +73,13 @@ jobs:
             sleep 0.5
           done
           echo "static server failed to start" >&2
-          cat /tmp/http.log >&2
+          cat "$RUNNER_TEMP/http.log" >&2
           exit 1
       - name: Run pa11y on 404.html
         run: npx pa11y --standard WCAG2AA http://127.0.0.1:8000/404.html
       - name: Stop server
         if: always()
         run: |
-          if [ -f /tmp/http.pid ]; then
-            kill "$(cat /tmp/http.pid)" || true
+          if [ -f "$RUNNER_TEMP/http.pid" ]; then
+            kill "$(cat "$RUNNER_TEMP/http.pid")" || true
           fi

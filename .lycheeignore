@@ -2,6 +2,7 @@
 ^tel:.*
 ^mailto:.*
 ^sms:.*
-# Placeholder production host used in sitemap.xml / robots.txt while the
-# custom domain is being provisioned. Remove once lrsservice.com is live.
+# Production host referenced by sitemap.xml / robots.txt. Skipped because
+# lychee runs on local files in CI (before deployment), where this host may
+# not yet resolve or may not reflect the branch under test.
 ^https?://lrsservice\.com($|/.*)
