@@ -1,0 +1,7 @@
+{
+  "standard": "WCAG2AA",
+  "hideElements": ".code",
+  "chromeLaunchConfig": {
+    "args": ["--no-sandbox", "--disable-setuid-sandbox"]
+  }
+}

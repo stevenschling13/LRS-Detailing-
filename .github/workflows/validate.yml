@@ -1,0 +1,86 @@
+name: Validate static site
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  html-validate:
+    name: HTML validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate HTML
+        uses: Cyb3r-Jak3/html5validator-action@v7.2.0
+        with:
+          root: .
+          css: false
+          format: text
+
+  link-check:
+    name: Link checking
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --no-progress
+            --max-concurrency 4
+            --accept 200,206,429
+            --exclude-path photos
+            --root-dir ${{ github.workspace }}
+            ./**/*.html ./**/*.md
+          fail: true
+
+  asset-tests:
+    name: sitemap.xml & robots.txt well-formedness
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run unittest suite
+        run: python -m unittest discover -s tests -v
+
+  accessibility:
+    name: Accessibility (pa11y) on 404.html
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pa11y
+        run: npm install --no-save pa11y@8
+      - name: Serve site
+        run: |
+          python3 -m http.server 8000 >"$RUNNER_TEMP/http.log" 2>&1 &
+          echo $! > "$RUNNER_TEMP/http.pid"
+          for i in $(seq 1 20); do
+            if curl -fs http://127.0.0.1:8000/404.html >/dev/null; then
+              exit 0
+            fi
+            sleep 0.5
+          done
+          echo "static server failed to start" >&2
+          cat "$RUNNER_TEMP/http.log" >&2
+          exit 1
+      - name: Run pa11y on 404.html
+        run: npx pa11y --config .pa11yci.json http://127.0.0.1:8000/404.html
+      - name: Stop server
+        if: always()
+        run: |
+          if [ -f "$RUNNER_TEMP/http.pid" ]; then
+            kill "$(cat "$RUNNER_TEMP/http.pid")" || true
+          fi

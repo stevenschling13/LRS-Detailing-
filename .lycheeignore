@@ -1,0 +1,8 @@
+# Non-HTTP schemes and infrastructure that lychee can't (or shouldn't) verify.
+^tel:.*
+^mailto:.*
+^sms:.*
+# Production host referenced by sitemap.xml / robots.txt. Skipped because
+# lychee runs on local files in CI (before deployment), where this host may
+# not yet resolve or may not reflect the branch under test.
+^https?://lrsservice\.com($|/.*)
