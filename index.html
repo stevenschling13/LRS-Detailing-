@@ -4,9 +4,16 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#0a0a0a" />
+<meta name="robots" content="index, follow, max-image-preview:large" />
+<meta name="format-detection" content="telephone=yes" />
 <title>LRS Service — Mobile Car Detailing in Hennepin County, MN</title>
 <meta name="description" content="LRS Service: professional mobile car detailing serving Hennepin County and the western Twin Cities metro. Cleaner car. Better impression. Free quotes — call or text 952-255-9160." />
 <link rel="canonical" href="https://lrsservice.com/" />
+
+<!-- Icons & PWA -->
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/favicon.svg" />
+<link rel="manifest" href="/manifest.webmanifest" />
 
 <!-- Open Graph -->
 <meta property="og:title" content="LRS Service — Mobile Car Detailing" />
@@ -779,13 +786,28 @@
 
   /* ---------- A11Y ---------- */
   :focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    background: var(--red);
+    color: #fff;
+    padding: 12px 18px;
+    font-weight: 700;
+    z-index: 100;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .skip-link:focus { left: 12px; top: 12px; }
 </style>
 </head>
 <body>
 
+<a class="skip-link" href="#services">Skip to content</a>
+
 <div class="topstripe">Mobile detailing across Hennepin County <span>·</span> Free quotes <span>·</span> 952-255-9160</div>
 
-<nav>
+<nav aria-label="Primary">
   <div class="nav-inner">
     <a class="logo" href="#top" aria-label="LRS Service home">
       <span class="logo-mark"><span>LRS</span></span>
