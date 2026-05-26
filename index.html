@@ -784,6 +784,50 @@
     .hero { padding: 60px 0 40px; }
   }
 
+  /* ---------- FORM STATUS ---------- */
+  .form-status {
+    margin-top: 18px;
+    padding: 18px;
+    background: var(--bg-2);
+    border: 1px solid var(--red);
+    border-left-width: 4px;
+  }
+  .form-status[hidden] { display: none; }
+  .form-status-msg {
+    color: var(--text);
+    font-size: 14px;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  .form-status-body {
+    white-space: pre-wrap;
+    word-break: break-word;
+    background: var(--bg);
+    border: 1px solid var(--line-2);
+    padding: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text);
+    margin-bottom: 12px;
+    max-height: 220px;
+    overflow: auto;
+  }
+  .form-status-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .form-status-actions .btn { justify-content: center; padding: 14px; flex: 1; }
+  @media (min-width: 600px) {
+    .form-status-actions { flex-direction: row; }
+  }
+  button[aria-busy="true"] { opacity: .65; cursor: progress; }
+  .field input:invalid:not(:placeholder-shown),
+  .field select:invalid:not(:placeholder-shown),
+  .field textarea:invalid:not(:placeholder-shown) {
+    border-color: var(--red);
+  }
+
   /* ---------- A11Y ---------- */
   :focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
   .skip-link {
@@ -803,7 +847,7 @@
 </head>
 <body>
 
-<a class="skip-link" href="#services">Skip to content</a>
+<a class="skip-link" href="#main">Skip to content</a>
 
 <div class="topstripe">Mobile detailing across Hennepin County <span>·</span> Free quotes <span>·</span> 952-255-9160</div>
 
@@ -819,6 +863,8 @@
     </a>
   </div>
 </nav>
+
+<main id="main">
 
 <!-- ============== HERO ============== -->
 <header class="hero" id="top">
@@ -1093,21 +1139,21 @@
       </div>
 
       <!-- Quote form (opens SMS with prefilled body) -->
-      <form class="form" id="quoteForm" onsubmit="return sendQuote(event)">
+      <form class="form" id="quoteForm" action="sms:+19522559160" method="get" aria-describedby="formStatus">
         <div class="form-row">
           <div class="field">
             <label for="name">Your Name</label>
-            <input id="name" name="name" type="text" autocomplete="name" required />
+            <input id="name" name="name" type="text" autocomplete="name" maxlength="60" required aria-required="true" />
           </div>
           <div class="field">
             <label for="vehicle">Vehicle</label>
-            <input id="vehicle" name="vehicle" type="text" placeholder="e.g. 2019 Honda CR-V" required />
+            <input id="vehicle" name="vehicle" type="text" placeholder="e.g. 2019 Honda CR-V" maxlength="80" required aria-required="true" />
           </div>
         </div>
         <div class="form-row">
           <div class="field">
             <label for="service">Service Wanted</label>
-            <select id="service" name="service" required>
+            <select id="service" name="service" required aria-required="true">
               <option value="">Choose a package…</option>
               <option>Express Wash ($60+)</option>
               <option>Interior Detail ($120+)</option>
@@ -1117,29 +1163,47 @@
           </div>
           <div class="field">
             <label for="city">City</label>
-            <input id="city" name="city" type="text" placeholder="e.g. Plymouth" required />
+            <input id="city" name="city" type="text" placeholder="e.g. Plymouth" maxlength="60" required aria-required="true" />
           </div>
         </div>
         <div class="field">
           <label for="notes">Anything Else? <span style="color:var(--dim); text-transform:none; letter-spacing:0;">(condition, pet hair, timing, etc.)</span></label>
-          <textarea id="notes" name="notes" placeholder="Optional"></textarea>
+          <textarea id="notes" name="notes" placeholder="Optional" maxlength="500"></textarea>
         </div>
 
         <div class="form-actions">
-          <button type="submit" class="btn btn-primary">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            Send Quote Request
+          <button type="submit" class="btn btn-primary" id="quoteSubmit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>Send Quote Request</span>
           </button>
           <a class="btn btn-ghost" href="tel:+19522559160">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
             Or Call Instead
           </a>
         </div>
-        <p class="form-note">Submitting opens your texting app with the message ready to send.</p>
+        <p class="form-note" id="formNote">Submitting opens your texting app with the message ready to send.</p>
+
+        <!-- Live status region: announced to screen readers and visible if SMS handler can't fire -->
+        <div id="formStatus" class="form-status" role="status" aria-live="polite" hidden>
+          <p class="form-status-msg"></p>
+          <pre class="form-status-body" aria-label="Prefilled message"></pre>
+          <div class="form-status-actions">
+            <button type="button" class="btn btn-ghost" id="copyMsg">Copy Message</button>
+            <a class="btn btn-primary" href="tel:+19522559160">Call 952-255-9160</a>
+          </div>
+        </div>
+
+        <noscript>
+          <p class="form-note" style="color: var(--red); margin-top: 12px;">
+            JavaScript is off — please call or text <a href="tel:+19522559160" style="color: var(--red); text-decoration: underline;">952-255-9160</a> directly.
+          </p>
+        </noscript>
       </form>
     </div>
   </div>
 </section>
+
+</main>
 
 <!-- ============== FOOTER ============== -->
 <footer>
@@ -1174,27 +1238,126 @@
 </footer>
 
 <script>
-  document.getElementById('year').textContent = new Date().getFullYear();
+  (function () {
+    'use strict';
 
-  function sendQuote(e) {
-    e.preventDefault();
-    const f = e.target;
-    const name    = f.name.value.trim();
-    const vehicle = f.vehicle.value.trim();
-    const service = f.service.value.trim();
-    const city    = f.city.value.trim();
-    const notes   = f.notes.value.trim();
+    // Year stamp in footer — fail safely if the element is missing.
+    try {
+      var yearEl = document.getElementById('year');
+      if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+    } catch (_) { /* non-fatal */ }
 
-    const body =
-      `Hi Logan, this is ${name}.\n` +
-      `Vehicle: ${vehicle}\n` +
-      `Service: ${service}\n` +
-      `City: ${city}` +
-      (notes ? `\nNotes: ${notes}` : '');
+    var form = document.getElementById('quoteForm');
+    if (!form) return;
 
-    window.location.href = 'sms:+19522559160?body=' + encodeURIComponent(body);
-    return false;
-  }
+    var status   = document.getElementById('formStatus');
+    var statusMsg = status && status.querySelector('.form-status-msg');
+    var statusBody = status && status.querySelector('.form-status-body');
+    var submit   = document.getElementById('quoteSubmit');
+    var copyBtn  = document.getElementById('copyMsg');
+
+    // Safer field reader — uses elements collection to avoid the
+    // HTMLFormElement named-property shadow on inputs called "name".
+    function fieldValue(name) {
+      var el = form.elements.namedItem(name);
+      if (!el) return '';
+      var v = el.value == null ? '' : String(el.value);
+      return v.trim().slice(0, 600);
+    }
+
+    function buildMessage() {
+      var lines = [
+        'Hi Logan, this is ' + fieldValue('name') + '.',
+        'Vehicle: ' + fieldValue('vehicle'),
+        'Service: ' + fieldValue('service'),
+        'City: '    + fieldValue('city')
+      ];
+      var notes = fieldValue('notes');
+      if (notes) lines.push('Notes: ' + notes);
+      return lines.join('\n');
+    }
+
+    function showStatus(body) {
+      if (!status) return;
+      if (statusBody) statusBody.textContent = body;
+      if (statusMsg) {
+        statusMsg.textContent =
+          'Opening your texting app… If nothing happens, copy the message below ' +
+          'or tap Call.';
+      }
+      status.hidden = false;
+      // Move focus there for screen reader users.
+      try { status.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (_) {}
+    }
+
+    function setBusy(busy) {
+      if (!submit) return;
+      submit.setAttribute('aria-busy', busy ? 'true' : 'false');
+      submit.disabled = !!busy;
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      // Native validity check first — surfaces browser hints on missing fields.
+      if (typeof form.checkValidity === 'function' && !form.checkValidity()) {
+        if (typeof form.reportValidity === 'function') form.reportValidity();
+        return;
+      }
+
+      setBusy(true);
+      var body;
+      try {
+        body = buildMessage();
+      } catch (err) {
+        setBusy(false);
+        return;
+      }
+
+      showStatus(body);
+
+      // Fire sms: in a microtask so the UI update paints first.
+      setTimeout(function () {
+        try {
+          window.location.href = 'sms:+19522559160?body=' + encodeURIComponent(body);
+        } catch (_) {
+          // Some browsers throw on unsupported schemes — the visible fallback
+          // panel already gives the user a way through (copy + call).
+        }
+        // Re-enable shortly after — the user may want to edit and re-send.
+        setTimeout(function () { setBusy(false); }, 1500);
+      }, 0);
+    });
+
+    // Copy-to-clipboard with a layered fallback for older browsers.
+    if (copyBtn) {
+      copyBtn.addEventListener('click', function () {
+        var text = statusBody ? statusBody.textContent : '';
+        if (!text) return;
+        var label = copyBtn.textContent;
+        var done = function (ok) {
+          copyBtn.textContent = ok ? 'Copied ✓' : 'Press Ctrl+C';
+          setTimeout(function () { copyBtn.textContent = label; }, 1800);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); });
+          return;
+        }
+        try {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          var ok = document.execCommand && document.execCommand('copy');
+          document.body.removeChild(ta);
+          done(!!ok);
+        } catch (_) { done(false); }
+      });
+    }
+  })();
 </script>
 
 </body>
